@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"log"
+)
 
 const (
 	memsize = 2048
@@ -8,12 +10,20 @@ const (
 
 var (
 	data [memsize]byte
-	p    uintptr
+	p    uint16
 )
 
 func main() {
 	for i := 0; i < memsize; i++ {
 		data[i] = byte(i % 256)
 	}
-	fmt.Println(data[p])
+	incP()
+	log.Println(data[p])
+}
+
+func incP() {
+	if p >= memsize {
+		log.Fatal("invalid memory address")
+	}
+	p++
 }
