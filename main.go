@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 )
 
@@ -17,11 +18,10 @@ func main() {
 	for i := 0; i < memsize; i++ {
 		data[i] = byte(i % 256)
 	}
-	incP()
-	inc()
-	inc()
-	incP()
-	log.Println(data[p])
+	for i := 0; i < 65; i++ {
+		inc()
+	}
+	print()
 }
 
 func incP() {
@@ -44,4 +44,8 @@ func inc() {
 
 func dec() {
 	data[p]--
+}
+
+func print() {
+	fmt.Printf("%c", data[p])
 }
