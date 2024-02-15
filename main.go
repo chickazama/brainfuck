@@ -27,3 +27,10 @@ func incP() {
 	}
 	p++
 }
+
+func decP() {
+	if p <= 0 {
+		log.Fatal("invalid memory address")
+	}
+	p--
+}
