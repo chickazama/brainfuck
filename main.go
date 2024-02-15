@@ -18,6 +18,9 @@ func main() {
 		data[i] = byte(i % 256)
 	}
 	incP()
+	inc()
+	inc()
+	incP()
 	log.Println(data[p])
 }
 
@@ -33,4 +36,12 @@ func decP() {
 		log.Fatal("invalid memory address")
 	}
 	p--
+}
+
+func inc() {
+	data[p]++
+}
+
+func dec() {
+	data[p]--
 }
