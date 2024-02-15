@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	memsize = 30000
+	memsize = 2048
 )
 
 var (
