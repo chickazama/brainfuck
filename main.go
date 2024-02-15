@@ -15,7 +15,16 @@ var (
 	data    [memsize]byte
 	p       uint16
 	rp      int
+	fp      *os.File
 )
+
+func init() {
+	var err error
+	fp, err = os.OpenFile("expanded.txt", os.O_WRONLY|os.O_CREATE, 0664)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+}
 
 func main() {
 	if len(os.Args) != 2 {
@@ -23,6 +32,7 @@ func main() {
 	}
 	program = []byte(os.Args[1])
 	read()
+	fp.Close()
 }
 
 func incP() {
@@ -59,21 +69,28 @@ func read() {
 		switch b {
 		case '<':
 			decP()
+			fmt.Fprintf(fp, "%c", b)
 		case '>':
 			incP()
+			fmt.Fprintf(fp, "%c", b)
 		case '-':
 			dec()
+			fmt.Fprintf(fp, "%c", b)
 		case '+':
 			inc()
+			fmt.Fprintf(fp, "%c", b)
 		case '.':
 			print()
+			fmt.Fprintf(fp, "%c", b)
 		case '[':
 			if data[p] == 0 {
 				jmp()
+				// fp.WriteString("jmp\n")
 			}
 		case ']':
 			if data[p] != 0 {
 				revjmp()
+				// fp.WriteString("revjmp\n")
 			}
 		default:
 			log.Fatal("invalid character")
@@ -83,6 +100,7 @@ func read() {
 }
 
 func jmp() {
+	fmt.Println(rp)
 	nest := 0
 	for rp < len(program)-1 && nest >= 0 {
 		rp++
