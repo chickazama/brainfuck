@@ -13,3 +13,9 @@ A simple 'Brainfuck' interpreter, written in Go.
 - Tape does not wrap (i.e. you cannot overflow memory locations on either side)
 - Byte values do wrap (i.e. you can indefinitely increment/decrement byte values, and they will wrap round)
 
+## Interesting Links
+
+[Brainfuck Reference](https://brainfuck.org/brainfuck.html)
+[Some Brainfuck Fluff (Daniel B. Cristofani)](https://brainfuck.org)
+
+
