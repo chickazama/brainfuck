@@ -57,12 +57,7 @@ func execute() {
 				jumpBackward()
 			}
 		case ',':
-			b, err := reader.ReadByte()
-			if err != nil {
-				log.Fatal(err.Error())
-			}
-			memory[memoryPtr] = b
-			reader.Reset(os.Stdin)
+			readByte()
 		}
 		instructionPtr++
 	}
@@ -129,4 +124,13 @@ func jumpBackward() {
 	if nestLevel >= 0 {
 		log.Fatal("invalid program construct")
 	}
+}
+
+func readByte() {
+	b, err := reader.ReadByte()
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+	memory[memoryPtr] = b
+	reader.Reset(os.Stdin)
 }
