@@ -15,7 +15,7 @@ A simple 'Brainfuck' interpreter, written in Go.
 
 ## Interesting Links
 
-[Brainfuck Reference](https://brainfuck.org/brainfuck.html)
-[Some Brainfuck Fluff (Daniel B. Cristofani)](https://brainfuck.org)
+- [Brainfuck Reference](https://brainfuck.org/brainfuck.html)
+- [Some Brainfuck Fluff (Daniel B. Cristofani)](https://brainfuck.org)
 
 
