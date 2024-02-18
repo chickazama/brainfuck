@@ -4,8 +4,6 @@ A simple 'Brainfuck' interpreter, written in Go.
 
 ## Instructions
 
-## Instructions
-
 | Instruction | Description                                                                            |
 | ----------- | -------------------------------------------------------------------------------------- |
 | `<`         | Moves the memory pointer one cell to the left.                                         |
