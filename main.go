@@ -1,29 +1,28 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"log"
 	"os"
 )
 
 const (
-	memsize = 2048
+	memsize = 32768
 )
 
 var (
-	program []byte
-	data    [memsize]byte
-	p       uint16
-	rp      int
-	fp      *os.File
+	program        []byte
+	memory         [memsize]byte
+	memoryPtr      int
+	instructionPtr int
+	reader         *bufio.Reader
 )
 
 func init() {
-	var err error
-	fp, err = os.OpenFile("expanded.txt", os.O_WRONLY|os.O_CREATE, 0664)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
+	memoryPtr = 0
+	instructionPtr = 0
+	reader = bufio.NewReader(os.Stdin)
 }
 
 func main() {
@@ -31,80 +30,77 @@ func main() {
 		log.Fatal("invalid argument count")
 	}
 	program = []byte(os.Args[1])
-	read()
-	fp.Close()
+	execute()
 }
 
-func incP() {
-	if p >= memsize {
-		fmt.Println(p)
-		log.Fatal("invalid memory address")
-	}
-	p++
-}
-
-func decP() {
-	if p <= 0 {
-		fmt.Println(p)
-		log.Fatal("invalid memory address")
-	}
-	p--
-}
-
-func inc() {
-	data[p]++
-}
-
-func dec() {
-	data[p]--
-}
-
-func print() {
-	fmt.Printf("%c", data[p])
-}
-
-func read() {
-	for rp < len(program) {
-		b := program[rp]
+func execute() {
+	for instructionPtr < len(program) {
+		b := program[instructionPtr]
 		switch b {
 		case '<':
 			decP()
-			fmt.Fprintf(fp, "%c", b)
 		case '>':
 			incP()
-			fmt.Fprintf(fp, "%c", b)
 		case '-':
 			dec()
-			fmt.Fprintf(fp, "%c", b)
 		case '+':
 			inc()
-			fmt.Fprintf(fp, "%c", b)
 		case '.':
 			print()
-			fmt.Fprintf(fp, "%c", b)
 		case '[':
-			if data[p] == 0 {
+			if memory[memoryPtr] == 0 {
 				jmp()
-				// fp.WriteString("jmp\n")
 			}
 		case ']':
-			if data[p] != 0 {
+			if memory[memoryPtr] != 0 {
 				revjmp()
-				// fp.WriteString("revjmp\n")
 			}
-		default:
-			log.Fatal("invalid character")
+		case ',':
+			b, err := reader.ReadByte()
+			if err != nil {
+				log.Fatal(err.Error())
+			}
+			memory[memoryPtr] = b
+			reader.Reset(os.Stdin)
 		}
-		rp++
+		instructionPtr++
 	}
 }
 
+func incP() {
+	if memoryPtr >= memsize {
+		fmt.Println(memoryPtr)
+		log.Fatal("invalid memory address")
+	}
+	memoryPtr++
+}
+
+func decP() {
+	if memoryPtr <= 0 {
+		fmt.Println(memoryPtr)
+		log.Fatal("invalid memory address")
+	}
+	memoryPtr--
+}
+
+func inc() {
+	memory[memoryPtr]++
+}
+
+func dec() {
+	memory[memoryPtr]--
+}
+
+func print() {
+	fmt.Printf("%c", memory[memoryPtr])
+}
+
 func jmp() {
-	fmt.Println(rp)
+	fmt.Println(instructionPtr)
 	nest := 0
-	for rp < len(program)-1 && nest >= 0 {
-		rp++
-		b := program[rp]
+	for instructionPtr < len(program)-1 && nest >= 0 {
+		instructionPtr++
+		b := program[instructionPtr]
 		switch b {
 		case '[':
 			nest++
@@ -119,9 +115,9 @@ func jmp() {
 
 func revjmp() {
 	nest := 0
-	for rp > 0 && nest >= 0 {
-		rp--
-		b := program[rp]
+	for instructionPtr > 0 && nest >= 0 {
+		instructionPtr--
+		b := program[instructionPtr]
 		switch b {
 		case '[':
 			nest--
