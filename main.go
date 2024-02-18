@@ -8,7 +8,8 @@ import (
 )
 
 const (
-	memsize = 32768
+	memsize      = 32768
+	expectedArgc = 2
 )
 
 var (
@@ -26,7 +27,7 @@ func init() {
 }
 
 func main() {
-	if len(os.Args) != 2 {
+	if len(os.Args) != expectedArgc {
 		log.Fatal("invalid argument count")
 	}
 	program = []byte(os.Args[1])
@@ -38,22 +39,22 @@ func execute() {
 		b := program[instructionPtr]
 		switch b {
 		case '<':
-			decP()
+			decrementMemoryPtr()
 		case '>':
-			incP()
+			incrementMemoryPtr()
 		case '-':
-			dec()
+			decrementByte()
 		case '+':
-			inc()
+			incrementByte()
 		case '.':
 			print()
 		case '[':
 			if memory[memoryPtr] == 0 {
-				jmp()
+				jumpForward()
 			}
 		case ']':
 			if memory[memoryPtr] != 0 {
-				revjmp()
+				jumpBackward()
 			}
 		case ',':
 			b, err := reader.ReadByte()
@@ -67,15 +68,7 @@ func execute() {
 	}
 }
 
-func incP() {
-	if memoryPtr >= memsize {
-		fmt.Println(memoryPtr)
-		log.Fatal("invalid memory address")
-	}
-	memoryPtr++
-}
-
-func decP() {
+func decrementMemoryPtr() {
 	if memoryPtr <= 0 {
 		fmt.Println(memoryPtr)
 		log.Fatal("invalid memory address")
@@ -83,49 +76,57 @@ func decP() {
 	memoryPtr--
 }
 
-func inc() {
-	memory[memoryPtr]++
+func incrementMemoryPtr() {
+	if memoryPtr >= memsize {
+		fmt.Println(memoryPtr)
+		log.Fatal("invalid memory address")
+	}
+	memoryPtr++
 }
 
-func dec() {
+func decrementByte() {
 	memory[memoryPtr]--
+}
+
+func incrementByte() {
+	memory[memoryPtr]++
 }
 
 func print() {
 	fmt.Printf("%c", memory[memoryPtr])
 }
 
-func jmp() {
+func jumpForward() {
 	fmt.Println(instructionPtr)
-	nest := 0
-	for instructionPtr < len(program)-1 && nest >= 0 {
+	nestLevel := 0
+	for instructionPtr < len(program)-1 && nestLevel >= 0 {
 		instructionPtr++
 		b := program[instructionPtr]
 		switch b {
 		case '[':
-			nest++
+			nestLevel++
 		case ']':
-			nest--
+			nestLevel--
 		}
 	}
-	if nest >= 0 {
+	if nestLevel >= 0 {
 		log.Fatal("invalid program construct")
 	}
 }
 
-func revjmp() {
-	nest := 0
-	for instructionPtr > 0 && nest >= 0 {
+func jumpBackward() {
+	nestLevel := 0
+	for instructionPtr > 0 && nestLevel >= 0 {
 		instructionPtr--
 		b := program[instructionPtr]
 		switch b {
 		case '[':
-			nest--
+			nestLevel--
 		case ']':
-			nest++
+			nestLevel++
 		}
 	}
-	if nest >= 0 {
+	if nestLevel >= 0 {
 		log.Fatal("invalid program construct")
 	}
 }
