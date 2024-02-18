@@ -2,6 +2,22 @@
 
 A simple 'Brainfuck' interpreter, written in Go.
 
+## Instructions
+
+## Instructions
+
+| Instruction | Description                                                                            |
+| ----------- | -------------------------------------------------------------------------------------- |
+| `<`         | Moves the memory pointer one cell to the left.                                         |
+| `>`         | Moves the memory pointer one cell to the right.                                        |
+| `+`         | Increments the current cell by one.                                                    |
+| `-`         | Decrements the current cell by one.                                                    |
+| `,`         | Reads one byte of data from stdin.                                                     |
+| `.`         | Writes the value of the current cell to stdout as ASCII.                               |
+| `[`         | Jumps forward to the instruction after the matching `]` if the current cell is 0.      |
+| `]`         | Jumps backwards to the instruction after the matchin `[` if the current cell is not 0. |
+
+
 ## About
 
 - Supply your program source as a command-line argument string.
