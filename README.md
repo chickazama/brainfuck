@@ -17,5 +17,6 @@ A simple 'Brainfuck' interpreter, written in Go.
 
 - [Brainfuck Reference](https://brainfuck.org/brainfuck.html)
 - [Some Brainfuck Fluff (Daniel B. Cristofani)](https://brainfuck.org)
+- [Urban Muller's Canonical Brainfuck Distribution](https://aminet.net/package.php?package=dev/lang/brainfuck-2.lha)
 
 
